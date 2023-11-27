@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import TodoList from "./userProfile";
+import UserProfile from "./UserProfile";
 
 ReactDOM.render(
   <React.StrictMode>
-    <userProfile />
+    <UserProfile />
   </React.StrictMode>,
   document.getElementById("root")
 );
