@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
+  const abortControllerRef = useRef(new AbortController());
 
   useEffect(() => {
-    const abortController = new AbortController();
-    const { signal } = abortController;
+    const { signal } = abortControllerRef.current;
 
     const fetchData = async () => {
       try {
@@ -15,21 +16,30 @@ const UserProfile = () => {
           { signal }
         );
         const userData = await response.json();
-        setUser(userData);
+
+        if (isMounted.current) {
+          setUser(userData);
+          setLoading(false);
+        }
       } catch (error) {
         if (error.name === "AbortError") {
           console.log("Request was aborted");
         } else {
           console.error("Error fetching user data:", error);
         }
-      } finally {
-        setLoading(false);
+
+        if (isMounted.current) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
 
-    return () => {};
+    return () => {
+      abortControllerRef.current.abort();
+      isMounted.current = false;
+    };
   }, []);
 
   return (
