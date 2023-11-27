@@ -29,9 +29,7 @@ const UserProfile = () => {
 
     fetchData();
 
-    return () => {
-      abortController.abort();
-    };
+    return () => {};
   }, []);
 
   return (
